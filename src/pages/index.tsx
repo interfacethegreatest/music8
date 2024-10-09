@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from 'axios';
 import { PropagateLoader } from "react-spinners";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
 
 const FormSchema = z.object({
   youtubeUrl: z.string()
@@ -16,7 +17,15 @@ const FormSchema = z.object({
 });
 type FormSchemaType = z.infer<typeof FormSchema>;
 
+interface ApiResponse {
+  message?: string;
+  song_title?: string;
+  song_link?: string;
+}
+
+
 export default function Home() {
+  const [apiResponse, setResponse] = useState<ApiResponse | null>(null);
   const {
     register,
     handleSubmit,
@@ -30,6 +39,8 @@ export default function Home() {
   const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
     try {
         const { data } = await axios.post('/api/auth/registerVideo', values);
+        console.log(data)
+        setResponse(data);
         reset(); // Reset only after successful submission
     } catch (error: any) {
         console.error("Error during form submission:", error.response.data.message); // Log the error message
@@ -52,6 +63,8 @@ export default function Home() {
          <input type="text" disabled={isSubmitting} {...register("youtubeUrl")} />
        )}
        <h5>{errors.youtubeUrl ? errors.youtubeUrl.message : null}</h5>
+       <h5>{apiResponse ? apiResponse.song_title : null}</h5>
+       <br />
        <button type="submit">Submit</button>
      </form>
    </>

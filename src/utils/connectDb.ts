@@ -4,7 +4,7 @@ if(!process.env.DATABASE_URL){
     throw new Error('Please add the database url in .env file')
 }
 
-const DATABASE_URL: string = process.env.DATABASE_URL
+const DATABASE_URL: string = process.env.DATABASE_URL;
 
 let globalWithMongoose = global as typeof globalThis &{
     mongoose: any;
